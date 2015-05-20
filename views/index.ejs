@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="normalize.css">
+	<link rel="stylesheet" type="text/css" href="skeleton.css">
+	<style type="text/css">
+		#messages {
+			border: 1px solid lightgrey;
+			height: 500px;
+			width: 450px;
+			display: inline-block;
+			padding: 10px;
+		}
+
+		#users {
+			border: 1px solid lightgrey;
+			height: 500px;
+			width: 200px;
+			display: inline-block;
+			padding: 10px;
+		}
+
+		textarea {
+			display: block;
+		}
+
+		form {
+			margin-top: 10px;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		var socket = io.connect();
+		var name = prompt('What is your name?');
+		if (name === '' || name === null) 
+		{
+			name = "User" + Math.floor(Math.random()*100)+1;
+		}
+
+		socket.emit("got_new_user", name);
+		socket.on('all_users', function (data) {
+			var everyone = '';
+
+			for(y in data)
+			{
+				everyone += data[y] + '<br>';
+			}
+
+			var last = data[data.length-1];
+
+			$('#users').html(everyone);
+			$('#messages').html(last + " has entered the chatroom.");
+		})
+
+		socket.on('all_chat', function (data) {
+			var all_messages = '';
+
+			for(x in data) 
+			{
+				all_messages += "<span class='bold'>" + data[x][0] + ": </span>" + "<span>" + data[x][1] + "</span>" + '<br>';
+			}
+
+			$('#messages').html(all_messages);
+			window.setInterval(function() {
+				var elem = document.getElementById('messages');
+				elem.scrollTop = elem.scrollHeight;
+			}, 20);
+		});
+
+		$('form').on('submit', function() {
+			socket.emit('user_message_name', [name, $(this).serialize()]);
+			$('textarea').val('');
+			return false;
+		});
+
+	});
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="six columns">
+				<h3>Conversation Board</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="twelve columns">
+				<div class="six columns" id='messages'>
+				</div>
+				<div class="six columns" id='users'>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<form method='post'>
+				<textarea placeholder='Enter your message here' cols='82' name='message'></textarea>
+				<input type='submit' value='Send'>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
