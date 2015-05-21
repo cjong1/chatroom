@@ -1,0 +1,46 @@
+body {
+	background-image: url("background.jpg");
+}
+
+h3 {
+	color: #006699;
+}
+
+#messages {
+	border: 3px solid lightgrey;
+	height: 500px;
+	width: 450px;
+	display: inline-block;
+	padding: 10px;
+	color: #006699;
+	background-color: white
+}
+
+#users {
+	border: 3px solid lightgrey;
+	height: 500px;
+	width: 200px;
+	display: inline-block;
+	padding: 10px;
+	color: #006699;
+	background-color: white;
+	font-weight: bold;
+}
+
+textarea {
+	display: block;
+	color: #006699;
+}
+
+.button, button, input[type="submit"], input[type="reset"], input[type="button"] {
+	color: #D1D1D1;
+	background-color: #006699;
+}
+
+form {
+	margin-top: 10px;
+}
+
+.user {
+	font-weight: bold;
+}
