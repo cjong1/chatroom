@@ -6,55 +6,60 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript">
-	$(document).ready(function(){
-		var socket = io.connect();
-		var name = prompt('What is your name?');
-		var all_messages = '';
+	<script>
+		$(document).ready(function(){
+			var socket = io.connect();
+			var name = prompt('What is your name?');
+			var all_messages = '';
 
-		if (name === '' || name === null) 
-		{
-			name = "User" + Math.floor(Math.random()*100)+1;
-		}
-
-		socket.emit("got_new_user", name);
-		socket.on('all_users', function (data) {
-			var everyone = '';
-
-			for(y in data)
+			if (name === '' || name === null) 
 			{
-				everyone += data[y] + '<br>';
+				name = "User" + Math.floor(Math.random()*100)+1;
 			}
 
-			var last = data[data.length-1];
-			all_messages += "<span class='user'>" + last + " has entered the chatroom.<br></span>"
+			socket.emit("got_new_user", name);
 
-			$('#users').html(everyone);
-			$('#messages').html(all_messages);
-		})
+			socket.on('all_users', function (data) {
+				var everyone = '';
 
-		socket.on('all_chat', function (data) {
-			// var all_messages = '';
+				for(y in data)
+				{
+					everyone += data[y] + '<br>';
+				}
 
-			for(x in data) 
-			{
-				all_messages += "<span class='user'>" + data[x][0] + ": </span>" + "<span>" + data[x][1] + "</span>" + '<br>';
-			}
+				var last = data[data.length-1];
+				// all_messages += "<span class='user'>" + last + " has entered the chatroom.<br></span>"
+				var message = "<span class='user'>" + last + " has entered the chatroom.<br></span>"
 
-			$('#messages').html(all_messages);
-			window.setInterval(function() {
-				var elem = document.getElementById('messages');
-				elem.scrollTop = elem.scrollHeight;
-			}, 20);
+				$('#users').html(everyone);
+				// $('#messages').html(all_messages);
+				$('#messages').append(message);
+			})
+
+			socket.on('all_chat', function (data) {
+
+				// for(x in data) 
+				// {
+					// all_messages += "<span class='user'>" + data[x][0] + ": </span>" + "<span>" + data[x][1] + "</span>" + '<br>';
+					var message = "<span class='user'>" + data[data.length-1][0] + ": </span>" + "<span>" + data[data.length-1][1] + "</span>" + '<br>'
+				// }
+
+				$('#messages').append(message);
+				// $('#messages').html(all_messages);
+				// all_messages = '';
+				window.setInterval(function() {
+					var elem = document.getElementById('messages');
+					elem.scrollTop = elem.scrollHeight;
+				}, 20);
+			});
+
+			$('form').on('submit', function() {
+				socket.emit('user_message_name', [name, $(this).serialize()]);
+				$('textarea').val('');
+				return false;
+			});
+
 		});
-
-		$('form').on('submit', function() {
-			socket.emit('user_message_name', [name, $(this).serialize()]);
-			$('textarea').val('');
-			return false;
-		});
-
-	});
 	</script>
 </head>
 <body>
