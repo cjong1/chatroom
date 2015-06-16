@@ -1,9 +1,21 @@
 body {
 	background-image: url("background.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 h3 {
 	color: #006699;
+	background-color: white;
+	border: 3px solid lightgrey;
+	text-align: center;
+	height: 65px;
+	margin-top: 12px;
+	padding-top: 15px;
+}
+
+.content {
+	margin-left: 125px;
 }
 
 #messages {
@@ -30,6 +42,7 @@ h3 {
 textarea {
 	display: block;
 	color: #006699;
+	width: 684px;
 }
 
 .button, button, input[type="submit"], input[type="reset"], input[type="button"] {
